@@ -8,7 +8,16 @@ ifndef PREFIX
 	PREFIX := /usr/local
 endif
 
-ifeq ($(OS),Windows_NT)
+ifeq '$(findstring ;,$(PATH))' ';'
+	UNAME := Windows
+else
+	UNAME := $(shell uname 2>/dev/null || echo Unknown)
+	UNAME := $(patsubst CYGWIN%,Cygwin,$(UNAME))
+	UNAME := $(patsubst MSYS%,MSYS,$(UNAME))
+	UNAME := $(patsubst MINGW%,MSYS,$(UNAME))
+endif
+
+ifeq ($(UNAME),Windows)
 	EXE := .exe
 	LOCATE_COMMAND := makefile_find_command
 else
